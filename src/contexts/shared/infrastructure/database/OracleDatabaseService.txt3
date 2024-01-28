@@ -1,0 +1,167 @@
+import oracledb from 'oracledb';
+import { IDatabaseService } from './IDatabaseService';
+
+export class OracleDatabaseService implements IDatabaseService {
+  private static instance: OracleDatabaseService;
+  private connection: oracledb.Connection | null = null;
+
+  private constructor(
+    private user: string,
+    private password: string,
+    private connectString: string,
+  ) { }
+
+  public static getInstance(): OracleDatabaseService {
+    if (!OracleDatabaseService.instance) {
+      OracleDatabaseService.instance = new OracleDatabaseService(
+
+        process.env.ORACLE_USER || '',
+        process.env.ORACLE_PASSWORD || '',
+        process.env.DB_CONNECTION_STRING || ''
+      );
+    }
+    return OracleDatabaseService.instance;
+  }
+
+  public async getConnection(): Promise<oracledb.Connection> {
+    // Si la conexión existe, intenta usarla. Si hay un error, intenta reconectar.
+    if (this.connection) {
+      try {
+        await this.connection.ping();
+        return this.connection;
+      } catch (error) {
+        console.warn('La conexión con la base de datos se perdió. Intentando reconectar...');
+        // Si hay un error al intentar usar la conexión existente, cierra esa conexión
+        await this.closeConnection();
+      }
+    }
+
+    // Si no hay conexión o la conexión anterior falló, intenta establecer una nueva conexión
+    try {
+      this.connection = await oracledb.getConnection({
+        user: this.user,
+        password: this.password,
+        connectString: this.connectString,
+      });
+      return this.connection;
+    } catch (err) {
+      console.error("Error al intentar establecer conexión:", err);
+      await this.closeConnection();
+      throw err;
+    }
+  }
+ 
+  public async execute2(sql: string, params?: any): Promise<oracledb.Result<any>> {
+    const connection = await this.getConnection();
+    try {
+      if (params && params.xml) {
+        // Use a PL/SQL block to handle CLOB data
+        const tempLob = await connection.createLob(oracledb.CLOB);
+        await new Promise((resolve, reject) => {
+          tempLob.on('error', err => reject(err));
+          tempLob.on('finish', resolve);
+          tempLob.write(params.xml);
+          tempLob.end();
+        });
+
+        // Replace the XML string in params with the LOB
+        params.xml = tempLob;
+
+        // ExecuteOptions must include autoCommit: false to manually commit after CLOB operations
+        const options = { autoCommit: false };
+        const result = await connection.execute(sql, params, options);
+        
+        // Commit the transaction after the CLOB data has been written
+        await connection.commit();
+        
+        // Close the LOB
+        await tempLob.close();
+
+        return result;
+      } else {
+        // If no CLOB data, execute normally
+        const result = await connection.execute(sql, params, { autoCommit: true });
+        return result;
+      }
+    } catch (err) {
+      console.error("Error in Oracle service:", err);
+      await this.rollbackTransaction();
+      throw err;
+    }
+  }
+  public async execute(sql: string, params?: any, options?: oracledb.ExecuteOptions): Promise<oracledb.Result<any>> {
+    const connection = await this.getConnection();
+    try {
+      // Set autoCommit to false for LOB operations
+      const executeOptions: oracledb.ExecuteOptions = { autoCommit: false, ...options };
+
+      // Initialize the result variable
+      let result: oracledb.Result<any>;
+
+      // If CLOB data is being inserted, use a special handling
+      if (params && params.xml) {
+        // Assign the CLOB column in the params to oracledb.CLOB to indicate the type
+        params.xml = { type: oracledb.CLOB, dir: oracledb.BIND_OUT };
+
+        // Execute the SQL to get the locator
+        result = await connection.execute(sql, params, executeOptions);
+
+        // Assuming 'xml' is the name of the CLOB column in your table
+        const clob = result.outBinds.xml;
+        
+        // Stream the data to the CLOB
+        await new Promise((resolve, reject) => {
+          const lob = clob; // The CLOB locator
+          lob.on('error', (err) => {
+            reject(err);
+          });
+          lob.on('finish', resolve);
+          lob.write(params.xml);
+          lob.end();
+        });
+      } else {
+        // If no CLOB, just execute the SQL statement
+        result = await connection.execute(sql, params, executeOptions);
+      }
+
+      // Commit the changes if everything went well
+      await connection.commit();
+      return result;
+    } catch (err) {
+      console.error("Error in Oracle service:", err);
+      await connection.rollback();
+      throw err;
+    }
+  }
+
+  public async commitTransaction(): Promise<void> {
+    const connection = await this.getConnection();
+    try {
+      await connection.commit();
+    } catch (err) {
+      console.error("Error while trying to commit transaction:", err);
+      throw err;
+    }
+  }
+
+  public async rollbackTransaction(): Promise<void> {
+    const connection = await this.getConnection();
+    try {
+      await connection.rollback();
+    } catch (err) {
+      console.error("Error while trying to rollback transaction:", err);
+      throw err;
+    }
+  }
+
+  public async closeConnection(): Promise<void> {
+    if (this.connection) {
+      try {
+        await this.connection.close();
+        this.connection = null;
+      } catch (err) {
+        console.error("Error while trying to close connection:", err);
+      }
+    }
+  }
+}

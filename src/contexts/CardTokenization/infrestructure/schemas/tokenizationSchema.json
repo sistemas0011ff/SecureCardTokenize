@@ -1,0 +1,30 @@
+{
+    "$id": "/tokenizeCard",
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string",
+        "format": "email",
+        "maxLength": 100
+      },
+      "card_number": {
+        "type": "string",
+        "pattern": "^[0-9]{13,16}$"
+      },
+      "cvv": {
+        "type": "string",
+        "pattern": "^[0-9]{3,4}$"
+      },
+      "expiration_year": {
+        "type": "string",
+        "pattern": "^[0-9]{4}$"
+      },
+      "expiration_month": {
+        "type": "string",
+        "pattern": "^(0[1-9]|1[0-2])$"
+      }
+    },
+    "required": ["email", "card_number", "cvv", "expiration_year", "expiration_month"],
+    "additionalProperties": false
+  }
+  

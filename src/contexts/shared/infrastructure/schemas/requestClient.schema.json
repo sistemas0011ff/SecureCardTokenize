@@ -1,0 +1,62 @@
+{
+  "$id": "/RequerimientoCliente",
+  "type": "object",
+  "properties": {
+    "mensaje": {
+      "type": "object",
+      "properties": {
+        "requerimiento_cliente": {
+          "type": "object",
+          "properties": {
+            "programa": {
+              "type": "object",
+              "properties": {
+                "canal": { "type": "string" },
+                "fecha_hora_rq": { "type": "string", "pattern": "^[0-9]{14}$" },
+                "sucursal_rq": { "type": "string" },
+                "nro_caja_rq": { "type": "string" },
+                "nro_transaccion_rq": { "type": "string" },
+                "vendedor_rq": { "type": "string" },
+                "version": { "type": "string" },
+                "timeout": { "type": "string" }
+              },
+              "required": [
+                "canal",
+                "fecha_hora_rq",
+                "sucursal_rq",
+                "nro_caja_rq",
+                "nro_transaccion_rq",
+                "vendedor_rq",
+                "version",
+                "timeout"
+              ],
+              "additionalProperties": false
+            },
+            "datos": {
+              "type": "object",
+              "properties": {
+                "tipo_operacion": { "type": "string" },
+                "tipo_cliente": { "type": "string" },
+                "doc_identidad": { "type": "string" },
+                "nom_cliente": { "type": "string" },
+                "email": { "type": "string" }
+              },
+              "required": [
+                "tipo_operacion",
+                "tipo_cliente",
+                "doc_identidad"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": ["programa", "datos"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["requerimiento_cliente"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["mensaje"],
+  "additionalProperties": false
+}

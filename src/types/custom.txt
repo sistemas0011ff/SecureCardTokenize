@@ -1,0 +1,6 @@
+// En el archivo custom.d.ts
+declare namespace Express {
+    export interface Request {
+      token?: JwtPayload; 
+    }
+  }

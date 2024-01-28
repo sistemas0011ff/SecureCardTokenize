@@ -1,0 +1,55 @@
+{
+    "$id": "/ConsultaConvenio",
+    "type": "object",
+    "properties": {
+      "mensaje": {
+        "type": "object",
+        "properties": {
+          "consulta_convenio": {
+            "type": "object",
+            "properties": {
+              "programa": {
+                "type": "object",
+                "properties": {
+                  "canal": { "type": "string" },
+                  "fecha_hora_rq": { "type": "string", "pattern": "^[0-9]{14}$" },
+                  "sucursal_rq": { "type": "string" },
+                  "nro_caja_rq": { "type": "string" },
+                  "nro_transaccion_rq": { "type": "string" },
+                  "vendedor_rq": { "type": "string" },
+                  "version": { "type": "string" },
+                  "timeout": { "type": "string" }
+                },
+                "required": [
+                  "canal",
+                  "fecha_hora_rq",
+                  "sucursal_rq",
+                  "nro_caja_rq",
+                  "nro_transaccion_rq",
+                  "vendedor_rq",
+                  "version",
+                  "timeout"
+                ],
+                "additionalProperties": false
+              },
+              "datos": {
+                "type": "object",
+                "properties": {
+                  "nro_convenio": { "type": "string" }
+                },
+                "required": ["nro_convenio"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["programa", "datos"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["consulta_convenio"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["mensaje"],
+    "additionalProperties": false
+  }
+  

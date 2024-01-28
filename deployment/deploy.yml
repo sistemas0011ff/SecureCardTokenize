@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis-container
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: securecardtokenize-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3908
+    protocol: TCP
+  selector:
+    app: securecardtokenize
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: securecardtokenize-deployment
+  labels:
+    app: securecardtokenize
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: securecardtokenize
+  template:
+    metadata:
+      labels:
+        app: securecardtokenize
+    spec:
+      containers:
+      - name: securecardtokenize-container
+        image: 970004914116.dkr.ecr.us-east-2.amazonaws.com/tokenizado-ecr:latest
+        ports:
+        - containerPort: 3908
+        envFrom:
+        - configMapRef:
+            name: securecardtokenize-config
+        - secretRef:
+            name: securecardtokenize-secret
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3908
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3908
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: securecardtokenize-config
+data:
+  NODE_ENV: "production"
+  BASE_PATH: ""
+  REDIS_PORT: "6379"
+  REDIS_HOST: "redis-service"
+  REDIS_DB: "0"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: securecardtokenize-secret
+type: Opaque
+data:
+  DATA_SECRET_KEY: "cnq0sA9+ZHTIoCzh8hzDUWITH/M6WcvGTXUnTd5xz14="
+  JWT_SECRET_KEY: "cnq0sA9+ZHTIoCzh8hzDUWITH/M6WcvGTXUnTd5xz14="

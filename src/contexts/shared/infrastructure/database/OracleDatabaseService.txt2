@@ -1,0 +1,102 @@
+import oracledb, { Pool } from 'oracledb';
+import { IDatabaseService } from './IDatabaseService';
+
+export class OracleDatabaseService implements IDatabaseService {
+    private static instance: OracleDatabaseService;
+    private pool: Pool | null = null;
+
+    private constructor(
+        private user: string,
+        private password: string,
+        private connectString: string,
+    ) { }
+
+    public static getInstance(): OracleDatabaseService {
+        if (!OracleDatabaseService.instance) {
+            OracleDatabaseService.instance = new OracleDatabaseService(
+                process.env.ORACLE_USER || '',
+                process.env.ORACLE_PASSWORD || '',
+                process.env.DB_CONNECTION_STRING || ''
+            );
+        }
+        return OracleDatabaseService.instance;
+    }
+
+    private async initializePool(): Promise<void> {
+        if (!this.pool) {
+            try {
+                this.pool = await oracledb.createPool({
+                    user: this.user,
+                    password: this.password,
+                    connectString: this.connectString,
+                    poolMax: 10,       // Maximum number of connections in the pool
+                    poolMin: 2,       // Minimum number of connections in the pool
+                    poolIncrement: 2, // Increment of connections at a time
+                    poolTimeout: 60   // Connection timeout in seconds
+                });
+            } catch (err) {
+                console.error("Error while trying to create the pool:", err);
+                throw err;
+            }
+        }
+    }
+
+    public async getConnection(): Promise<oracledb.Connection> {
+        await this.initializePool();
+        return this.pool!.getConnection();
+    }
+
+    public async execute(sql: string, params?: any): Promise<oracledb.Result<any>> {
+        const connection = await this.getConnection();
+        try {
+            const result = await connection.execute(sql, params);
+            return result;
+        } catch (err) {
+            console.error("Error in Oracle service:", err);
+            throw err;
+        } finally {
+            // Release the connection back to the pool
+            await connection.close();
+        }
+    }
+
+    public async commitTransaction(): Promise<void> {
+        const connection = await this.getConnection();
+        try {
+            await connection.commit();
+        } finally {
+            // Release the connection back to the pool
+            await connection.close();
+        }
+    }
+
+    public async rollbackTransaction(): Promise<void> {
+        const connection = await this.getConnection();
+        try {
+            await connection.rollback();
+        } finally {
+            // Release the connection back to the pool
+            await connection.close();
+        }
+    }
+
+    public async closePool(): Promise<void> {
+        if (this.pool) {
+            try {
+                await this.pool.close(0); // Close all the connections in the pool
+            } catch (err) {
+                console.error("Error while trying to close the pool:", err);
+            }
+        }
+    }
+
+    public async closeConnection(conn?: oracledb.Connection): Promise<void> {
+      if (conn) {
+          try {
+              await conn.close();
+          } catch (err) {
+              console.error("Error while trying to close connection:", err);
+          }
+      }
+  }
+}

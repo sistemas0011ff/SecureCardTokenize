@@ -1,0 +1,11 @@
+// src/types/express.d.ts
+
+import { JwtPayload } from 'jsonwebtoken';
+
+declare global {
+  namespace Express {
+    interface Request {
+      token?: JwtPayload; // Extiende el objeto Request para incluir token
+    }
+  }
+}
