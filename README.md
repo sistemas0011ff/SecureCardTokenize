@@ -71,7 +71,7 @@ Asegúrate de que tu firewall y las reglas de seguridad de la red permitan el ac
 Antes de clonar y ejecutar el proyecto, debes tener configurado lo siguiente en tu entorno de desarrollo:
 
 ## Herramientas Requeridas
-![Descargar este Manual para creación de EKS en AWS](images/aws_manual_icon_50x50.png) [Descargar este Manual para creación de EKS en AWS](https://retodev-2024.s3.amazonaws.com/AWS-CONFIGURACION.docx)
+![Descargar este Manual para creación de EKS en AWS](images/aws_manual_icon_50x50.png) [Descargar este Manual para creación de EKS en AWS](https://store-eks-doc.s3.us-east-2.amazonaws.com/MANUAL+PROCEDIMIENTO+AWS.docx)
 
 - **AWS CLI:** Debes tener la AWS Command Line Interface instalada y configurada con tus credenciales.
 - **Node.js:** Se requiere Node.js.
@@ -94,7 +94,6 @@ REDIS_HOST=redis
 REDIS_DB=0
 DATA_SECRET_KEY="U2VjcmV0Q3VscWlSZXRvRGF0YQ=="
 JWT_SECRET_KEY="cnq0sA9+ZHTIoCzh8hzDUWITH/M6WcvGTXUnTd5xz14="
-
 ```
 ## Uso
 Antes de comenzar, asegúrate de tener configuradas tus credenciales de AWS y acceso a Amazon EKS. Esto es necesario para que puedas interactuar con los servicios de AWS y desplegar aplicaciones en Amazon EKS. Sigue estos pasos si aún no lo has hecho:
@@ -336,7 +335,7 @@ Ejecuta el siguiente comando en tu terminal para listar todos los servicios en e
 - #### Acceso a la API
 
   - Para acceder a la API de "SecureCardTokenize", utiliza la siguiente IP externa o URL:
-  - **URL Base Externa:** `hhttp://ad59274a00cfd404bbe430d05292b8eb-1726481549.us-east-2.elb.amazonaws.com/[end-point]`
+  - **URL Base Externa:** `hhttp://a257d6ca7d4714a5794e3d400d8f2c60-1321498614.us-east-2.elb.amazonaws.com/[end-point]`
 
 - #### Tokenización de Tarjetas
   - **Endpoint:** `/tokenize-card`
