@@ -20,7 +20,7 @@ terraform/.terraform/
 # test coverage
 coverage/
 test-report.xml
-.env*
+#.env*
 .husky
 
 .favorites.json
