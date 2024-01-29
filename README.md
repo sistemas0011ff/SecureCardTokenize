@@ -475,7 +475,6 @@ Ejecución de pruebas:
 #### Total de Pruebas
 - Suites de prueba: 11 pasadas de 11 totales.
 - Pruebas: 32 pasadas de 32 totales.
-_Documentación generada por el equipo de desarrollo._
 ### Autor
 
 - **Arturo Eduardo Fajardo Gutiérrez** 
