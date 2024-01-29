@@ -128,26 +128,26 @@ Para ejecutar el proyecto en un entorno local, debes cumplir con los siguientes 
 - Tener **REDIS** instalado localmente. REDIS debe estar configurado para permitir el acceso sin necesidad de usuario y contraseña. Asegúrate de que el servicio de REDIS esté ejecutándose y que los puertos correspondientes estén disponibles para conexiones.
 
 
-```bash
-# Ejecuta
-npm run start:local
-```
+  ```bash
+  # Ejecuta
+  npm run start:local
+  ```
 - Al ejecutar la aplicación localmente, se espera que recibas un mensaje de confirmación en la consola o en los logs de la aplicación. Aquí tienes un ejemplo del mensaje y una descripción de sus componentes:
 
-```json
-{
-  "level": 30,
-  "time": 1706454119875,
-  "system": "Culqi",
-  "country": "PE",
-  "service": "secure-card-tokenize",
-  "environment": "production",
-  "appVersion": "1.0.0",
-  "message": {},
-  "msg": "pry-secure-card-tokenize App is running at 3908 in production mode"
-}
+  ```json
+  {
+    "level": 30,
+    "time": 1706454119875,
+    "system": "Culqi",
+    "country": "PE",
+    "service": "secure-card-tokenize",
+    "environment": "production",
+    "appVersion": "1.0.0",
+    "message": {},
+    "msg": "pry-secure-card-tokenize App is running at 3908 in production mode"
+  }
 
-```
+  ```
 - **level**: Nivel de registro del log, donde 30 representa un nivel de 'info'.
 - **time**: Timestamp UNIX del momento en que se registró el log.
 - **system**: El sistema o plataforma desde donde se está ejecutando la aplicación.
@@ -222,6 +222,42 @@ Docker Compose permite definir y compartir aplicaciones multi-contenedor.
   docker push tu-id-de-repositorio.ecr.tu-region.amazonaws.com/securecardtokenize:latest
   ```
 #### Pasos para despliegue en Amazon EKS
+- Resumen del Despliegue Kubernetes
+  - Servicios y Despliegues
+    - 1. Servicio de Redis (`redis-service`)
+      - **Tipo**: Service
+      - **Función**: Exposición interna del servicio Redis en el clúster
+      - **Puerto**: 6379
+      - **Selector**: `app: redis`
+    - 2. Despliegue de Redis (`redis-deployment`)
+      - **Tipo**: Deployment
+      - **Replicas**: 1
+      - **Etiquetas**: `app: redis`
+      - **Contenedor**:
+        - **Nombre**: `redis-container`
+        - **Imagen**: `redis`
+        - **Puerto del Contenedor**: 6379
+        - **Recursos**:
+          - **Solicitados**: 500Mi memoria, 500m CPU
+          - **Límites**: 1Gi memoria, 1000m CPU
+    - 3. Servicio de Tokenización de Tarjetas (`securecardtokenize-service`)
+      - **Tipo**: Service
+      - **Función**: Exposición externa del servicio de tokenización mediante LoadBalancer
+      - **Puertos**: Puerto 80 del servicio a puerto 3908 del contenedor
+      - **Selector**: `app: securecardtokenize`
+    - 4. Despliegue de Tokenización de Tarjetas (`securecardtokenize-deployment`)
+      - **Tipo**: Deployment
+      - **Replicas**: 2
+      - **Etiquetas**: `app: securecardtokenize`
+      - **Contenedor**:
+        - **Nombre**: `securecardtokenize-container`
+        - **Imagen**: [Considerar la URI de la imagen del ECR creada, esta definida en el Documento]
+        - **Puerto del Contenedor**: 3908
+        - **Variables de Entorno**: Desde `ConfigMap` y `Secret`
+        - **Sondas de Vida y Disponibilidad**: `/health` en puerto 3908
+        - **Recursos**:
+          - **Solicitados**: 500Mi memoria, 500m CPU
+          - **Límites**: 1Gi memoria, 1000m CPU
 - Actualizar la configuración de kubectl para el cluster EKS
   ```bash
   aws eks --region [tu-region] update-kubeconfig --name [nombre-del-cluster-eks]
