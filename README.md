@@ -12,60 +12,58 @@ Los servicios se han implementado siguiendo una arquitectura hexagonal y los pri
  
 ![Diagrama de Arquitectura](images/DiagramaArquitectura.png)
 ### **UI/API [Adaptadores Primarios]** - [1]
-**Función**: Interfaz de usuario y puntos de entrada de la API.  
-**Componentes**: 
-- Controladores o resolvers (`src/app/controllers`)
-- Rutas (`src/app/routes`)
-**Descripción**: 
-Gestiona las solicitudes entrantes de los usuarios o sistemas externos y las redirige a la capa de aplicación. Actúa como el frente del sistema, manejando las interacciones y las peticiones de API.
+- **Función**: Interfaz de usuario y puntos de entrada de la API.  
+- **Componentes**: 
+  - Controladores o resolvers (`src/app/controllers`)
+  - Rutas (`src/app/routes`)
+  **Descripción**: 
+  Gestiona las solicitudes entrantes de los usuarios o sistemas externos y las redirige a la capa de aplicación. Actúa como el frente del sistema, manejando las interacciones y las peticiones de API.
 
 ### **Capa de Aplicación [Puerto Primario]** - [2]
-**Función**: Orquestación de la lógica de aplicación específica para cada contexto limitado.  
-**Componentes**: 
-- Servicios, fábricas, y otras clases relacionadas con la lógica de negocio que se encuentran en `src/contexts/[ContextoLimitado]/application`.
-**Descripción**: 
-Coordina los casos de uso dentro de cada contexto limitado, procesando datos y lógica de negocio específica del contexto y enviándolos a la capa correspondiente.
+- **Función**: Orquestación de la lógica de aplicación específica para cada contexto limitado.  
+- **Componentes**: 
+  - Servicios, fábricas, y otras clases relacionadas con la lógica de negocio que se encuentran en `src/contexts/[ContextoLimitado]/application`.
+  **Descripción**: 
+  Coordina los casos de uso dentro de cada contexto limitado, procesando datos y lógica de negocio específica del contexto y enviándolos a la capa correspondiente.
 
 ### **Casos de Uso [Controladores de Lógica de Negocio]** - [3]
-**Función**: Manejo específico de casos de uso de la lógica de negocio.  
-**Componentes**: 
-- Módulos de casos de uso (`src/contexts/[ContextoLimitado]/application/usecases`)
-**Descripción**: 
-Implementa la lógica específica de los casos de uso, como procesos de transacción, validaciones y reglas de negocio. Cada caso de uso es responsable de una parte específica de la lógica del negocio.
+- **Función**: Manejo específico de casos de uso de la lógica de negocio.  
+- **Componentes**:  
+  - Módulos de casos de uso (`src/contexts/[ContextoLimitado]/application/usecases`)
+  **Descripción**: 
+  Implementa la lógica específica de los casos de uso, como procesos de transacción, validaciones y reglas de negocio. Cada caso de uso es responsable de una parte específica de la lógica del negocio.
 
 ### **Capa de Dominio [Núcleo]** - [4]
-**Función**: Núcleo de la lógica de negocio.  
-**Componentes**: 
-- Entidades y lógica de dominio (`src/contexts/[ContextoLimitado]/domain`)
-**Descripción**: 
-Contiene la lógica de negocio esencial y las reglas del dominio, modelando los objetos y procesos del negocio. Esta capa es crucial para mantener la integridad y las reglas del negocio.
+- **Función**: Núcleo de la lógica de negocio.  
+- **Componentes**: 
+  - Entidades, Agregados, Objetos valor y lógica de dominio (`src/contexts/[ContextoLimitado]/domain`)
+  **Descripción**: 
+  Contiene la lógica de negocio esencial y las reglas del dominio, modelando los objetos y procesos del negocio. Esta capa es crucial para mantener la integridad y las reglas del negocio.
 
 ### **Puertos Secundarios [Interfaces de Dominio]** - [5]
-**Función**: Interfaces para la comunicación externa.  
-**Componentes**: 
-- Interfaces de dominio o puertos por contexto(`src/contexts/[ContextoLimitado]/domain/interfaces`)
-- Interfaces de dominio o puertos transversales(`src/contexts/shared/domain/interfaces`)
-**Descripción**: 
-Proporciona puntos de integración y comunicación con sistemas externos o con la capa de infraestructura, permitiendo una interacción flexible con otras partes del sistema o con servicios externos.
+- **Función**: Interfaces para la comunicación externa.  
+- **Componentes**: 
+  - Interfaces de dominio o puertos por contexto(`src/contexts/[ContextoLimitado]/domain/interfaces`)
+  - Interfaces de dominio o puertos transversales(`src/contexts/shared/domain/interfaces`)
+  **Descripción**: 
+  Proporciona puntos de integración y comunicación con sistemas externos o con la capa de infraestructura, permitiendo una interacción flexible con otras partes del sistema o con servicios externos.
 
 ### **Capa de Infraestructura [Adaptadores Secundarios]** - [6]
-**Función**: Implementaciones técnicas y de soporte.  
-**Componentes**: 
-- Implementaciones de infraestructura por contexto(`src/contexts/[ContextoLimitado]/infrastructure`)
-- Implementaciones de infraestructura transversales(`src/contexts/shared/infrastructure`)
-**Descripción**: 
-Maneja las operaciones de persistencia, conexiones a bases de datos y la interacción con servicios externos. Esta capa es clave para la operación y comunicación con otros sistemas y recursos.
+- **Función**: Implementaciones técnicas y de soporte.  
+- **Componentes**: 
+  - Implementaciones de infraestructura por contexto(`src/contexts/[ContextoLimitado]/infrastructure`)
+  - Implementaciones de infraestructura transversales(`src/contexts/shared/infrastructure`)
+  **Descripción**: 
+  Maneja las operaciones de persistencia, conexiones a bases de datos y la interacción con servicios externos. Esta capa es clave para la operación y comunicación con otros sistemas y recursos.
 
 ### **Recursos Compartidos [Shared Kernel]** - [7]
-**Función**: Código y funcionalidades comunes.  
-**Componentes**: 
-- Código compartido (`src/contexts/shared`)
-**Descripción**: 
-Incluye herramientas, utilidades y código que es compartido entre diferentes partes del sistema, proporcionando una base común y reduciendo la duplicidad. Esencial para mantener la cohesión y la reutilización del código.
+- **Función**: Código y funcionalidades comunes.  
+- **Componentes**: 
+  - Código compartido (`src/contexts/shared`)
+  **Descripción**: 
+  Incluye herramientas, utilidades y código que es compartido entre diferentes partes del sistema, proporcionando una base común y reduciendo la duplicidad. Esencial para mantener la cohesión y la reutilización del código.
 
 ## Comenzando
-
-
 ## Prerrequisitos para Configurar y Ejecutar el Proyecto
 Antes de hacer cualquier solicitud a la API, asegúrate de tener las credenciales adecuadas y permisos para acceder a los servicios AWS.
 Asegúrate de que tu firewall y las reglas de seguridad de la red permitan el acceso al puerto necesario para la API.
@@ -159,7 +157,7 @@ Para ejecutar el proyecto en un entorno local, debes cumplir con los siguientes 
 - **msg**: Mensaje descriptivo que indica que la aplicación "pry-secure-card-tokenize" está en funcionamiento, especificando el puerto y el modo de entorno.
 
 ### Despliegue con Docker Compose
-Docker Compose permite definir y compartir aplicaciones multi-contenedor.
+- Docker Compose permite definir y compartir aplicaciones multi-contenedor.
 #### Prerrequisitos
 - Docker y Docker Compose deben estar instalados en tu máquina.
 - Ubicarte en el directorio donde se encuentra `docker-compose.yml` donde se define los servicios de la aplicación.
@@ -328,92 +326,91 @@ Ejecuta el siguiente comando en tu terminal para listar todos los servicios en e
      kubectl get pods
      ```
 ## Documentación API de Tokenización de Tarjetas
-Se detalla los endpoints disponibles para la tokenización de tarjetas y la recuperación de datos de tarjetas tokenizadas.
+- Se detalla los endpoints disponibles para la tokenización de tarjetas y la recuperación de datos de tarjetas tokenizadas.
 
 ### Endpoints
 
 ## Acceso y Pruebas de la API
 
-### Acceso a la API
+- #### Acceso a la API
 
-Para acceder a la API de "SecureCardTokenize", utiliza la siguiente IP externa o URL:
-- **URL Base Externa:** `hhttp://ad59274a00cfd404bbe430d05292b8eb-1726481549.us-east-2.elb.amazonaws.com/[end-point]`
+  - Para acceder a la API de "SecureCardTokenize", utiliza la siguiente IP externa o URL:
+  - **URL Base Externa:** `hhttp://ad59274a00cfd404bbe430d05292b8eb-1726481549.us-east-2.elb.amazonaws.com/[end-point]`
 
-#### Tokenización de Tarjetas
-
-- **Endpoint:** `/tokenize-card`
-- **Método:** POST
-- **Descripción:** Crea un token único para una tarjeta de crédito proporcionada.
-- **Cuerpo de la Solicitud (Request Body):**
-  ```json
-  {
-    "email": "usuario@example.com",
-    "card_number": "4111111111111111",
-    "cvv": "123",
-    "expiration_year": "2024",
-    "expiration_month": "12"
-  }
-  ```
-- **Responses:**
-  - `200 OK`: Devuelve un token de tarjeta de crédito generado con éxito.
-  - `400 Bad Request`: La entrada es inválida.
-
-- **Evidencia**
-![Crea un token único para una tarjeta](images/ep1.png)
-
-#### Respuesta de Tokenización de Tarjetas
-
-Tras una solicitud exitosa de tokenización, la API devuelve un `token` en el formato JSON Web Token (JWT), que es una cadena de texto codificada segura:
-
-```json
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNhcmROdW1iZXIiOiI0MTExMTExMTExMTExMTExIiwiZXhwaXJhdGlvbkRhdGUiOiIxMC8yMDI3IiwiY3Z2IjoiODg4IiwiZW1haWwiOiJleGFtcGxlQGhvdG1haWwuY29tIn0sImlhdCI6MTcwNjQ1ODQwMiwiZXhwIjoxNzA2NDU4NDYyfQ.rtOg3urJ7_OpYY52mUvqYWpQWNGtd0zRakrtRIO8bS8"
-}
-```
-
-#### Estructura del JWT
-
-El JWT consta de tres partes, separadas por puntos (`.`):
-
-- **Encabezado (Header)**: Indica el tipo de token (JWT) y el algoritmo de firma utilizado, en este caso (AES-256).
-- **Carga Útil (Payload)**: Contiene los claims o afirmaciones sobre la entidad (generalmente, el usuario) y datos adicionales. Aquí se incluyen el número de tarjeta, la fecha de caducidad, el CVV y el correo electrónico cifrados.
-- **Firma (Signature)**: Para crear la firma, se debe tomar el encabezado codificado en base64, el payload codificado en base64, y una clave secreta. Luego se utiliza el algoritmo especificado en el encabezado para firmar estos datos.
-
-  ```typescript
-  const token = jwt.sign({ data: datos }, this.jwtSecretKey, { expiresIn: '1m' });
-  ```
-Cada parte del JWT se codifica en Base64 y se separa por puntos. El encabezado y el payload son información codificada, mientras que la firma es el resultado de la codificación del encabezado y el payload con una clave secreta.
-
-#### Validez del Token
-
-El token proporcionado tiene un tiempo de validez limitado, generalmente corto, para garantizar la seguridad. En este caso, el token es válido por:
-
-- **1 minuto**: Después de este período, el token ya no será válido y las solicitudes que lo utilicen serán rechazadas.
-
-#### Uso del Token
-
-Este token se debe incluir en el encabezado de autorización de las solicitudes HTTP para autenticar y autorizar las operaciones que accedan a la información de la tarjeta de crédito. Solo el servidor que conoce la clave secreta puede generar o validar este token, lo que asegura la integridad y autenticidad de las comunicaciones.
-
-#### Obtener Datos de la Tarjeta
-- **Endpoint:** `/card-data`
-- **Método:** GET
-- **Descripción:** Recupera los datos de la tarjeta de crédito utilizando el token previamente generado.
-- **Headers:**
-  - **Authorization**: Requiere un token de autorización en el formato `Bearer <token>`.
-  
-- **Responses:**
-  - `200 OK`: La solicitud ha sido exitosa y los datos de la tarjeta se devuelven en el cuerpo de la respuesta.
+- #### Tokenización de Tarjetas
+  - **Endpoint:** `/tokenize-card`
+  - **Método:** POST
+  - **Descripción:** Crea un token único para una tarjeta de crédito proporcionada.
+  - **Cuerpo de la Solicitud (Request Body):**
     ```json
     {
-      "cardNumber": "4111111111111111",
-      "expirationDate": "10/2027",
-      "email": "example@hotmail.com"
+      "email": "usuario@example.com",
+      "card_number": "4111111111111111",
+      "cvv": "123",
+      "expiration_year": "2024",
+      "expiration_month": "12"
     }
     ```
-  - `401 Unauthorized`: La solicitud no ha sido completada porque falta el token de autorización o es inválido.
-  - `404 Not Found`: No se encontraron datos para el token proporcionado, puede que haya expirado o sea incorrecto.
-- **Evidencia**
-![Crea un token único para una tarjeta](images/ep2.png)
+  - **Responses:**
+    - `200 OK`: Devuelve un token de tarjeta de crédito generado con éxito.
+    - `400 Bad Request`: La entrada es inválida.
+
+  - **Evidencia**
+  ![Crea un token único para una tarjeta](images/ep1.png)
+
+  - #### Respuesta de Tokenización de Tarjetas
+
+    Tras una solicitud exitosa de tokenización, la API devuelve un `token` en el formato JSON Web Token (JWT), que es una cadena de texto codificada segura:
+
+    ```json
+    {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNhcmROdW1iZXIiOiI0MTExMTExMTExMTExMTExIiwiZXhwaXJhdGlvbkRhdGUiOiIxMC8yMDI3IiwiY3Z2IjoiODg4IiwiZW1haWwiOiJleGFtcGxlQGhvdG1haWwuY29tIn0sImlhdCI6MTcwNjQ1ODQwMiwiZXhwIjoxNzA2NDU4NDYyfQ.rtOg3urJ7_OpYY52mUvqYWpQWNGtd0zRakrtRIO8bS8"
+    }
+    ```
+
+- #### Estructura del JWT
+
+  El JWT consta de tres partes, separadas por puntos (`.`):
+
+  - **Encabezado (Header)**: Indica el tipo de token (JWT) y el algoritmo de firma utilizado, en este caso (AES-256).
+  - **Carga Útil (Payload)**: Contiene los claims o afirmaciones sobre la entidad (generalmente, el usuario) y datos adicionales. Aquí se incluyen el número de tarjeta, la fecha de caducidad, el CVV y el correo electrónico cifrados.
+  - **Firma (Signature)**: Para crear la firma, se debe tomar el encabezado codificado en base64, el payload codificado en base64, y una clave secreta. Luego se utiliza el algoritmo especificado en el encabezado para firmar estos datos.
+
+    ```typescript
+    const token = jwt.sign({ data: datos }, this.jwtSecretKey, { expiresIn: '1m' });
+    ```
+  Cada parte del JWT se codifica en Base64 y se separa por puntos. El encabezado y el payload son información codificada, mientras que la firma es el resultado de la codificación del encabezado y el payload con una clave secreta.
+
+- #### Validez del Token
+
+  El token proporcionado tiene un tiempo de validez limitado, generalmente corto, para garantizar la seguridad. En este caso, el token es válido por:
+
+  - **1 minuto**: Después de este período, el token ya no será válido y las solicitudes que lo utilicen serán rechazadas.
+
+  #### Uso del Token
+
+  Este token se debe incluir en el encabezado de autorización de las solicitudes HTTP para autenticar y autorizar las operaciones que accedan a la información de la tarjeta de crédito. Solo el servidor que conoce la clave secreta puede generar o validar este token, lo que asegura la integridad y autenticidad de las comunicaciones.
+
+  #### Obtener Datos de la Tarjeta
+  - **Endpoint:** `/card-data`
+  - **Método:** GET
+  - **Descripción:** Recupera los datos de la tarjeta de crédito utilizando el token previamente generado.
+  - **Headers:**
+    - **Authorization**: Requiere un token de autorización en el formato `Bearer <token>`.
+    
+  - **Responses:**
+    - `200 OK`: La solicitud ha sido exitosa y los datos de la tarjeta se devuelven en el cuerpo de la respuesta.
+      ```json
+      {
+        "cardNumber": "4111111111111111",
+        "expirationDate": "10/2027",
+        "email": "example@hotmail.com"
+      }
+      ```
+    - `401 Unauthorized`: La solicitud no ha sido completada porque falta el token de autorización o es inválido.
+    - `404 Not Found`: No se encontraron datos para el token proporcionado, puede que haya expirado o sea incorrecto.
+  - **Evidencia**
+  ![Crea un token único para una tarjeta](images/ep2.png)
 
 ## Reporte de Pruebas del Proyecto
 
