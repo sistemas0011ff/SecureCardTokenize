@@ -193,10 +193,11 @@ Para ejecutar el proyecto en un entorno local, debes cumplir con los siguientes 
      docker-compose ps
      ```
 
-#### Detener y Limpiar
-- Para detener los servicios, utiliza:
-  ```bash
-  docker-compose down
+4. #### Detener y Limpiar
+  - Para detener los servicios, utiliza:
+    ```bash
+    docker-compose down
+    ```
 ### Configuración de AWS ECR para Desplegar en EKS
 #### Prerrequisitos
 - Docker instalado y en ejecución en tu máquina.
