@@ -222,7 +222,7 @@ Docker Compose permite definir y compartir aplicaciones multi-contenedor.
   docker push tu-id-de-repositorio.ecr.tu-region.amazonaws.com/securecardtokenize:latest
   ```
 #### Pasos para despliegue en Amazon EKS
-- Resumen del Despliegue Kubernetes
+- Resumen del Despliegue Kubernetes deploy.yml
   - Servicios y Despliegues
     - 1. Servicio de Redis (`redis-service`)
       - **Tipo**: Service
@@ -258,6 +258,11 @@ Docker Compose permite definir y compartir aplicaciones multi-contenedor.
         - **Recursos**:
           - **Solicitados**: 500Mi memoria, 500m CPU
           - **Límites**: 1Gi memoria, 1000m CPU
+    - 5. ConfigMap para Tokenización de Tarjetas (`securecardtokenize-config`)
+      - Proporciona configuración de entorno y detalles de conexión a Redis.
+    - 6. Secret para Tokenización de Tarjetas (`securecardtokenize-secret`)
+      - Contiene claves secretas para cifrado o autenticación.
+
 - Actualizar la configuración de kubectl para el cluster EKS
   ```bash
   aws eks --region [tu-region] update-kubeconfig --name [nombre-del-cluster-eks]
